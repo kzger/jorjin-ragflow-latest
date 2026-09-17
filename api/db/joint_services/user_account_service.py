@@ -41,6 +41,11 @@ from rag.nlp import search
 from common.constants import ActiveEnum
 from common import settings
 
+# New
+from api.db.joint_services.default_model_bootstrap import (
+    initialize_default_model_providers,
+)
+
 
 def create_new_user(user_info: dict) -> dict:
     """
@@ -99,6 +104,7 @@ def create_new_user(user_info: dict) -> dict:
         TenantService.insert(**tenant)
         UserTenantService.insert(**usr_tenant)
         # TenantLLMService.insert_many(tenant_llm)
+        initialize_default_model_providers(user_id)
         FileService.insert(file)
 
         return {

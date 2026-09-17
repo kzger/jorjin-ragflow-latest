@@ -1,0 +1,10 @@
+FROM jorjin-ragflow:v0.26.4-docling
+
+COPY api/db/joint_services/default_model_bootstrap.py \
+    /ragflow/api/db/joint_services/default_model_bootstrap.py
+
+COPY api/db/joint_services/user_account_service.py \
+    /ragflow/api/db/joint_services/user_account_service.py
+
+COPY api/apps/restful_apis/user_api.py \
+    /ragflow/api/apps/restful_apis/user_api.py

@@ -58,6 +58,10 @@ from api.utils.web_utils import (
 )
 from common import settings
 
+from api.db.joint_services.default_model_bootstrap import (
+    initialize_default_model_providers,
+)
+
 
 @manager.route("/auth/login", methods=["POST"])  # noqa: F821
 async def login():
@@ -430,6 +434,7 @@ def rollback_user_registration(user_id):
 
 def user_register(user_id, user):
     user["id"] = user_id
+
     tenant = {
         "id": user_id,
         "name": user["nickname"] + "‘s Kingdom",
@@ -440,13 +445,16 @@ def user_register(user_id, user):
         "img2txt_id": "",
         "rerank_id": "",
     }
+
     usr_tenant = {
         "tenant_id": user_id,
         "user_id": user_id,
         "invited_by": user_id,
         "role": UserTenantRole.OWNER,
     }
+
     file_id = get_uuid()
+
     file = {
         "id": file_id,
         "parent_id": file_id,
@@ -458,14 +466,21 @@ def user_register(user_id, user):
         "location": "",
     }
 
-    # tenant_llm = get_init_tenant_llm(user_id)
-
     if not UserService.save(**user):
         return None
+
     TenantService.insert(**tenant)
     UserTenantService.insert(**usr_tenant)
-    # TenantLLMService.insert_many(tenant_llm)
+
+    # Create default Model Provider / Instance / Model records.
+    logging.info(
+        "Registering default model providers for new user: user_id=%s",
+        user_id,
+    )
+    initialize_default_model_providers(user_id)
+
     FileService.insert(file)
+
     return UserService.query(email=user["email"])
 
 
