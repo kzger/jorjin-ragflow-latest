@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 /**
  * Basic page container:
  * - Full size
- * - Padding x=2.5rem top=0.75rem
+ * - Responsive content gutters
  * - Auto scrollbar
  */
 export function PageContainer({
@@ -12,7 +12,10 @@ export function PageContainer({
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div
-      className={cn('size-full px-5 py-3 overflow-auto', className)}
+      className={cn(
+        'size-full px-4 py-6 sm:px-6 lg:px-8 overflow-auto',
+        className,
+      )}
       {...props}
     />
   );

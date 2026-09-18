@@ -32,11 +32,13 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: ThemeEnum;
+  preference: ThemeEnum;
   setTheme: (theme: ThemeEnum, persist?: boolean) => void;
 };
 
 const initialState: ThemeProviderState = {
   theme: ThemeEnum.Light,
+  preference: ThemeEnum.System,
   setTheme: () => null,
 };
 
@@ -44,14 +46,32 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = ThemeEnum.Dark,
+  defaultTheme = ThemeEnum.System,
   storageKey = 'vite-ui-theme',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<ThemeEnum>(
-    () => (localStorage.getItem(storageKey) as ThemeEnum) || defaultTheme,
+  const [preference, setThemeState] = useState<ThemeEnum>(() => {
+    const saved = localStorage.getItem(storageKey) as ThemeEnum;
+    return Object.values(ThemeEnum).includes(saved) ? saved : defaultTheme;
+  });
+  const [systemDark, setSystemDark] = useState(
+    () => window.matchMedia('(prefers-color-scheme: dark)').matches,
   );
+  const theme =
+    preference === ThemeEnum.System
+      ? systemDark
+        ? ThemeEnum.Dark
+        : ThemeEnum.Light
+      : preference;
   const persistRef = useRef(true);
+
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => setSystemDark(media.matches);
+    media.addEventListener('change', handleChange);
+    handleChange();
+    return () => media.removeEventListener('change', handleChange);
+  }, []);
 
   const setTheme = useCallback((nextTheme: ThemeEnum, persist = true) => {
     persistRef.current = persist;
@@ -62,16 +82,18 @@ export function ThemeProvider({
     const root = window.document.documentElement;
     root.classList.remove(ThemeEnum.Light, ThemeEnum.Dark);
     if (persistRef.current) {
-      localStorage.setItem(storageKey, theme);
+      localStorage.setItem(storageKey, preference);
     }
     root.classList.add(theme);
-  }, [storageKey, theme]);
+    root.style.colorScheme = theme;
+  }, [storageKey, theme, preference]);
 
   return (
     <ThemeProviderContext.Provider
       {...props}
       value={{
         theme,
+        preference,
         setTheme,
       }}
     >
@@ -104,7 +126,7 @@ export function useSwitchToDarkThemeOnMount() {
 }
 
 export function useSyncThemeFromParams(theme: string | null) {
-  const { theme: contextTheme, setTheme } = useTheme();
+  const { preference: contextTheme, setTheme } = useTheme();
   const originalThemeRef = useRef<ThemeEnum | null>(null);
 
   useEffect(() => {

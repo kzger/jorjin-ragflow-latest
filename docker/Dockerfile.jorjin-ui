@@ -1,0 +1,13 @@
+# Build context MUST be web/dist, not the repository root.
+# Supply a pinned, locally available backend image via BASE_IMAGE.
+ARG BASE_IMAGE=jorjin-ragflow:docling-enable-v0.27.2
+FROM ${BASE_IMAGE}
+
+ARG WEB_REVISION=uncommitted
+LABEL com.jorjin.web.revision="${WEB_REVISION}"
+
+# Remove old hashed bundles rather than retaining two UI releases.
+RUN rm -rf /ragflow/web/dist
+COPY . /ragflow/web/dist/
+RUN test -s /ragflow/web/dist/index.html \
+    && test -s /ragflow/web/dist/jorjin-rag-logo.png

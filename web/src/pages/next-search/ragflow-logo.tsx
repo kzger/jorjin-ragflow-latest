@@ -17,7 +17,7 @@
 import { useFetchTokenListBeforeOtherStep } from '@/components/embed-dialog/use-show-embed-dialog';
 import { Button } from '@/components/ui/button';
 import { SharedFrom } from '@/constants/chat';
-import { cn } from '@/lib/utils';
+import { BrandLogo } from '@/components/brand-logo';
 import { Routes } from '@/routes';
 import { Send } from 'lucide-react';
 import { useState } from 'react';
@@ -65,13 +65,8 @@ export function RAGFlowLogo({
 }) {
   return (
     <div className="flex gap-4 items-center">
-      <h1
-        onClick={onClick}
-        className={cn(
-          'text-4xl font-bold bg-gradient-to-l from-[#40EBE3] to-[#4A51FF] bg-clip-text',
-        )}
-      >
-        RAGFlow
+      <h1 onClick={onClick} className="leading-none">
+        <BrandLogo className="w-48 sm:w-64" />
       </h1>
       {showEmbedIcon && <EmbedIcon></EmbedIcon>}
     </div>

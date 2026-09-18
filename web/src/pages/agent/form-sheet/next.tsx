@@ -32,8 +32,7 @@ interface IProps {
 }
 
 const EmptyContent = () => <div></div>;
-const SandboxQuickstartUrl =
-  'https://github.com/infiniflow/ragflow/blob/main/docs/guides/agent/agent_quickstarts/sandbox_quickstart.md';
+const SandboxQuickstartUrl = 'https://jorjin.com/';
 
 const openSandboxQuickstart: MouseEventHandler<HTMLButtonElement> = (e) => {
   e.stopPropagation();

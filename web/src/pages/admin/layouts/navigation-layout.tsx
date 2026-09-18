@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, useNavigate } from 'react-router';
 
@@ -11,16 +11,21 @@ import {
   LucideUserCog,
   LucideUserStar,
   LucideZap,
+  PanelLeftClose,
+  PanelLeftOpen,
+  LogOut,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { BrandLogo } from '@/components/brand-logo';
+import { LanguageButton } from '@/components/language-button';
 import { cn } from '@/lib/utils';
 import { Routes } from '@/routes';
 import { getSystemVersion, logout } from '@/services/admin-service';
 
 import authorizationUtil from '@/utils/authorization-util';
 
-import ThemeSwitch from '../../../components/theme-switch';
+import ThemeButton from '@/layouts/components/theme-button';
 import { IS_ENTERPRISE } from '../utils';
 import { CurrentUserInfoContext } from './root-layout';
 
@@ -28,6 +33,8 @@ const AdminNavigationLayout = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [, setCurrentUserInfo] = useContext(CurrentUserInfoContext);
+  const [collapsed, setCollapsed] = useState(false);
+  const toggleSidebar = () => setCollapsed((value) => !value);
 
   const { data: version } = useQuery({
     queryKey: ['admin/version'],
@@ -87,21 +94,31 @@ const AdminNavigationLayout = () => {
     },
     retry: false,
   });
+  const handleLogout = () => logoutMutation.mutate();
 
   return (
-    <main className="w-screen h-screen flex flex-row px-6 pt-12 pb-6 dark:*:focus-visible:ring-white">
-      <aside className="w-72 mr-6 flex flex-col gap-6">
-        <div className="flex items-center mb-6">
-          <img className="size-8 mr-5" src="/logo.svg" alt="logo" />
-          <span className="text-xl font-bold">{t('admin.title')}</span>
+    <main className="flex h-dvh w-full flex-col overflow-auto bg-bg-base md:flex-row md:overflow-hidden">
+      <aside
+        className={cn(
+          'flex shrink-0 flex-col gap-5 border-b border-sidebar-border bg-sidebar p-3 md:border-b-0 md:border-r',
+          collapsed ? 'md:w-16' : 'md:w-64',
+        )}
+      >
+        <div className="flex h-16 shrink-0 items-center justify-center">
+          <BrandLogo
+            compact={collapsed}
+            className={collapsed ? 'size-10' : 'w-52'}
+          />
         </div>
 
-        <nav>
-          <ul className="space-y-4">
+        <nav className="min-h-0 overflow-auto">
+          <ul className="space-y-1">
             {navItems.map((it) => (
               <li key={it.path}>
                 <NavLink
                   to={it.path}
+                  aria-label={it.name}
+                  title={collapsed ? it.name : undefined}
                   className={({ isActive }) =>
                     cn(
                       'px-4 py-3 rounded-lg',
@@ -110,14 +127,17 @@ const AdminNavigationLayout = () => {
                       'hover:text-text-primary focus:text-text-primary focus-visible:text-text-primary',
                       'active:text-text-primary',
                       'transition-colors',
+                      collapsed && 'md:justify-center md:px-0',
                       {
-                        'bg-bg-card text-text-primary': isActive,
+                        'bg-primary/10 text-primary': isActive,
                       },
                     )
                   }
                 >
                   {it.icon}
-                  <span className="ml-3">{it.name}</span>
+                  <span className={cn('ml-3', collapsed && 'md:hidden')}>
+                    {it.name}
+                  </span>
                 </NavLink>
               </li>
             ))}
@@ -125,26 +145,60 @@ const AdminNavigationLayout = () => {
         </nav>
 
         <div className="mt-auto space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="leading-none text-xs text-accent-primary">
+          <div
+            className={cn(
+              'flex justify-between items-center',
+              collapsed && 'md:flex-col',
+            )}
+          >
+            <span
+              className={cn(
+                'leading-none text-xs text-accent-primary',
+                collapsed && 'md:hidden',
+              )}
+            >
               {version}
             </span>
 
-            <ThemeSwitch />
+            <LanguageButton />
+            <ThemeButton />
           </div>
 
           <Button
             size="lg"
             variant="transparent"
             block
-            onClick={() => logoutMutation.mutate()}
+            onClick={handleLogout}
+            aria-label={t('header.logout')}
+            className={cn(collapsed && 'md:px-0')}
           >
-            {t('header.logout')}
+            <LogOut className="size-4" />
+            <span className={cn(collapsed && 'md:hidden')}>
+              {t('header.logout')}
+            </span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="hidden w-full md:inline-flex"
+            onClick={toggleSidebar}
+            aria-label={t(
+              collapsed ? 'brand.expandSidebar' : 'brand.collapseSidebar',
+            )}
+            aria-expanded={!collapsed}
+          >
+            {collapsed ? (
+              <PanelLeftOpen />
+            ) : (
+              <>
+                <PanelLeftClose />
+                {t('brand.collapseSidebar')}
+              </>
+            )}
           </Button>
         </div>
       </aside>
 
-      <section className="flex-1 h-full">
+      <section className="min-h-0 min-w-0 flex-1 overflow-auto p-4 sm:p-6">
         <Outlet />
       </section>
     </main>

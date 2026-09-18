@@ -8,11 +8,11 @@ import {
 } from '@/hooks/use-login-request';
 import { useSystemConfig } from '@/hooks/use-system-request';
 import { rsaPsw } from '@/utils';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import Spotlight from '@/components/spotlight';
+import { AuthLayout } from '@/components/auth-layout';
 import { Button, ButtonLoading } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -29,12 +29,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import { NICKNAME_PATTERN } from '../user-setting/profile/constants';
-import { BgSvg } from './bg';
-import FlipCard3D, { FlipFaceContext } from './card';
-import './index.less';
 
 type LoginFormContentProps = {
-  isLoginPage: boolean;
   title: string;
   form: UseFormReturn<any>;
   loading: boolean;
@@ -48,7 +44,6 @@ type LoginFormContentProps = {
 };
 
 function LoginFormContent({
-  isLoginPage,
   title,
   form,
   loading,
@@ -60,9 +55,6 @@ function LoginFormContent({
   t,
   disablePasswordLogin,
 }: LoginFormContentProps) {
-  const face = useContext(FlipFaceContext);
-  const isActiveFace = isLoginPage ? face === 'front' : face === 'back';
-
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <div className="text-center mb-8">
@@ -70,13 +62,13 @@ function LoginFormContent({
           {title === 'login' ? t('loginTitle') : t('signUpTitle')}
         </h2>
       </div>
-      <div className=" w-full max-w-[540px] bg-bg-component backdrop-blur-sm rounded-2xl shadow-xl pt-14 pl-10 pr-10 pb-2 border border-border-button ">
+      <div className="w-full">
         {!disablePasswordLogin && (
           <Form {...form}>
             <form
-              className="flex flex-col gap-8 text-text-primary "
+              className="flex flex-col gap-5 text-text-primary"
               data-testid="auth-form"
-              data-active={isActiveFace ? 'true' : undefined}
+              data-active="true"
               onSubmit={form.handleSubmit(onCheck)}
             >
               <FormField
@@ -162,7 +154,7 @@ function LoginFormContent({
                         </FormControl>
                         <FormLabel
                           className={cn('cursor-pointer', {
-                            'text-text-disabled': !field.value,
+                            'text-text-secondary': !field.value,
                             'text-text-primary': field.value,
                           })}
                         >
@@ -178,7 +170,9 @@ function LoginFormContent({
                 data-testid="auth-submit"
                 type="submit"
                 loading={loading}
-                className="bg-metallic-gradient border-b-[#00BEB4] border-b-2 hover:bg-metallic-gradient hover:border-b-[#02bcdd] w-full my-8"
+                variant="accent"
+                size="lg"
+                className="w-full my-4"
               >
                 {title === 'login' ? t('login') : t('continue')}
               </ButtonLoading>
@@ -212,7 +206,7 @@ function LoginFormContent({
 
         {!disablePasswordLogin && title === 'login' && registerEnabled && (
           <div className="mt-10 text-right">
-            <p className="text-text-disabled text-sm">
+            <p className="text-text-secondary text-sm">
               {t('signInTip')}
               <Button
                 data-testid="auth-toggle-register"
@@ -227,7 +221,7 @@ function LoginFormContent({
         )}
         {!disablePasswordLogin && title === 'register' && (
           <div className="mt-10 text-right">
-            <p className="text-text-disabled text-sm">
+            <p className="text-text-secondary text-sm">
               {t('signUpTip')}
               <Button
                 data-testid="auth-toggle-login"
@@ -257,7 +251,6 @@ const Login = () => {
   const { t: tSetting } = useTranslation('translation', {
     keyPrefix: 'setting',
   });
-  const [isLoginPage, setIsLoginPage] = useState(true);
 
   const loading =
     signLoading ||
@@ -280,14 +273,11 @@ const Login = () => {
   };
 
   const changeTitle = () => {
-    setIsLoginPage(title !== 'login');
     if (title === 'login' && !registerEnabled) {
       return;
     }
 
-    setTimeout(() => {
-      setTitle(title === 'login' ? 'register' : 'login');
-    }, 200);
+    setTitle(title === 'login' ? 'register' : 'login');
   };
 
   const FormSchema = z
@@ -357,60 +347,22 @@ const Login = () => {
   };
 
   return (
-    <>
-      <Spotlight opcity={0.4} coverage={60} color={'rgb(128, 255, 248)'} />
-      <Spotlight
-        opcity={0.3}
-        coverage={12}
-        X={'10%'}
-        Y={'-10%'}
-        color={'rgb(128, 255, 248)'}
-      />
-      <Spotlight
-        opcity={0.3}
-        coverage={12}
-        X={'90%'}
-        Y={'-10%'}
-        color={'rgb(128, 255, 248)'}
-      />
-      <div className=" h-[inherit] relative overflow-auto">
-        <BgSvg isPaused />
-
-        <div className="z-20 absolute top-3 flex flex-col items-center mb-12 w-full text-text-primary">
-          <div className="flex items-center mb-4 w-full pl-10 pt-10 ">
-            <div className="w-12 h-12 p-2 rounded-lg flex items-center justify-center mr-3">
-              <img
-                src={'/logo.svg'}
-                alt="logo"
-                className="size-8 mr-[12] cursor-pointer"
-              />
-            </div>
-            <div className="text-xl font-bold self-center">RAGFlow</div>
-          </div>
-          <h1 className="text-[36px] font-medium  text-center mb-2">
-            {t('title')}
-          </h1>
-        </div>
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-[1050px] px-4 sm:px-6 lg:px-8">
-          {/* Login Form */}
-          <FlipCard3D isLoginPage={isLoginPage}>
-            <LoginFormContent
-              isLoginPage={isLoginPage}
-              title={title}
-              form={form}
-              loading={loading}
-              onCheck={onCheck}
-              changeTitle={changeTitle}
-              registerEnabled={registerEnabled}
-              channels={channels || []}
-              handleLoginWithChannel={handleLoginWithChannel}
-              t={t}
-              disablePasswordLogin={!!config?.disablePasswordLogin}
-            />
-          </FlipCard3D>
-        </div>
+    <AuthLayout>
+      <div data-testid="auth-card-active">
+        <LoginFormContent
+          title={title}
+          form={form}
+          loading={loading}
+          onCheck={onCheck}
+          changeTitle={changeTitle}
+          registerEnabled={registerEnabled}
+          channels={channels || []}
+          handleLoginWithChannel={handleLoginWithChannel}
+          t={t}
+          disablePasswordLogin={!!config?.disablePasswordLogin}
+        />
       </div>
-    </>
+    </AuthLayout>
   );
 };
 

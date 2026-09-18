@@ -1,3 +1,4 @@
+import { supportedLanguages } from '@/locales/config';
 /*
  *  Copyright 2026 The InfiniFlow Authors. All Rights Reserved.
  *
@@ -19,10 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal/modal';
 import { RAGFlowSelect } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import {
-  LanguageAbbreviation,
-  LanguageAbbreviationMap,
-} from '@/constants/common';
+import {} from '@/constants/common';
 import { useTranslate } from '@/hooks/common-hooks';
 import { useFetchTenantInfo } from '@/hooks/use-user-setting-request';
 import { ExternalLink } from 'lucide-react';
@@ -48,9 +46,9 @@ const EmbedAppModal = (props: IEmbedAppModalProps) => {
   const [locale, setLocale] = useState('');
 
   const languageOptions = useMemo(() => {
-    return Object.values(LanguageAbbreviation).map((x) => ({
-      label: LanguageAbbreviationMap[x],
-      value: x,
+    return supportedLanguages.map(({ code, displayName }) => ({
+      label: displayName,
+      value: code,
     }));
   }, []);
 

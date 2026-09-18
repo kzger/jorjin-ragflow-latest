@@ -1,0 +1,6 @@
+# Layer after docker-compose.yml; retain the existing project name and .env.
+# CPU/Python deployment only. Does not change ports, volumes or backend mode.
+services:
+  ragflow-cpu:
+    image: ${JORJIN_RELEASE_IMAGE:?Set JORJIN_RELEASE_IMAGE to a verified release image}
+    pull_policy: never

@@ -49,7 +49,7 @@ export const LocalLlmConfigs: Record<string, ProviderConfig> = {
     'Ollama',
     false,
     undefined,
-    'https://github.com/infiniflow/ragflow/blob/main/docs/guides/models/deploy_local_llm.mdx',
+    'https://jorjin.com/',
   ),
   [LLMFactory.Xinference]: buildLocalConfig(
     LLMFactory.Xinference,
@@ -137,7 +137,7 @@ export const LocalLlmConfigs: Record<string, ProviderConfig> = {
     'RAGcon',
     false,
     undefined,
-    'https://www.ragcon.ai/erste-schritte-mit-ragflow/',
+    'https://jorjin.com/',
   ),
   [LLMFactory.TogetherAI]: buildLocalConfig(
     LLMFactory.TogetherAI,

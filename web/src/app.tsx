@@ -19,9 +19,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { configResponsive } from 'ahooks';
 import dayjs from 'dayjs';
-import 'dayjs/locale/ar';
-import 'dayjs/locale/tr';
-import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-tw';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
@@ -94,7 +92,7 @@ const RootProvider = ({ children }: React.PropsWithChildren) => {
     <TooltipProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider
-          defaultTheme={ThemeEnum.Dark}
+          defaultTheme={ThemeEnum.System}
           storageKey="ragflow-ui-theme"
         >
           <Root>{children}</Root>

@@ -95,8 +95,7 @@ const providerKeyConfig = {
     label: 'You.com API Key',
     tip: 'youcomApiKeyTip',
     placeholder: 'youcomApiKeyMessage',
-    helpUrl:
-      'https://you.com/platform?utm_source=infiniflow-ragflow&utm_medium=oss_integration&utm_campaign=2026-08-oss-integrations&utm_content=app',
+    helpUrl: 'https://you.com/platform',
   },
 } as const;
 

@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import Spotlight from '@/components/spotlight';
 import message from '@/components/ui/message';
 import { useAutoResizeTextarea } from '@/hooks/use-auto-resize-textarea';
 import { IUserInfo } from '@/interfaces/database/user-setting';
@@ -63,15 +62,16 @@ export default function SearchHome({
   }, [canSearch, isSearching, searchText, setIsSearching, t]);
 
   return (
-    <section className="relative w-full flex transition-all justify-center items-center mt-[15vh]">
-      <div className="relative z-10 px-8 pt-8 flex  text-transparent flex-col justify-center items-center w-full max-w-[780px]">
+    <section className="relative flex w-full items-center justify-center px-4 py-12 sm:py-20">
+      <div className="relative flex w-full max-w-3xl flex-col items-center justify-center">
         <RAGFlowLogo showEmbedIcon={showEmbedLogo}></RAGFlowLogo>
-        <div className="rounded-lg  text-primary text-xl sticky flex justify-center w-full transform scale-100 mt-8 p-6 min-h-[240px] border">
-          {!isSearching && <Spotlight className="z-0" />}
-          <div className="flex flex-col justify-center items-center  w-2/3">
+        <div className="mt-8 flex min-h-60 w-full justify-center rounded-2xl border border-border-button bg-bg-component p-5 text-text-primary shadow-sm sm:p-8">
+          <div className="flex w-full flex-col items-center justify-center">
             {!isSearching && (
               <>
-                <p className="mb-4 transition-opacity">👋 Hi there</p>
+                <p className="mb-4 text-xl font-semibold">
+                  {t('brand.searchTitle')}
+                </p>
                 <p className="mb-10 transition-opacity">
                   {userInfo && (
                     <>
@@ -112,6 +112,7 @@ export default function SearchHome({
               />
               <button
                 type="button"
+                aria-label={t('common.search')}
                 className={cn(
                   'absolute right-3 flex size-9 items-center justify-center rounded-full bg-text-primary text-bg-base shadow transition-opacity hover:opacity-90',
                   isMultiLine ? 'bottom-3' : 'top-1/2 -translate-y-1/2',

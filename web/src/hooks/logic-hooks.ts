@@ -37,7 +37,6 @@ import {
   consumeListDeletionMarker,
   discardListDeletionMarker,
 } from '@/utils/list-deletion-util';
-import axios from 'axios';
 import { EventSourceParserStream } from 'eventsource-parser/stream';
 import { has, isEmpty, omit } from 'lodash';
 import {
@@ -240,25 +239,6 @@ export const useGetPagination = (options?: { pageSize?: number }) => {
     pagination: currentPagination,
     setPagination,
   };
-};
-
-export interface AppConf {
-  appName: string;
-}
-
-export const useFetchAppConf = () => {
-  const [appConf, setAppConf] = useState<AppConf>({} as AppConf);
-  const fetchAppConf = useCallback(async () => {
-    const ret = await axios.get('/conf.json');
-
-    setAppConf(ret.data);
-  }, []);
-
-  useEffect(() => {
-    fetchAppConf();
-  }, [fetchAppConf]);
-
-  return appConf;
 };
 
 function useSetDoneRecord() {

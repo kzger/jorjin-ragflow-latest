@@ -80,7 +80,7 @@ const globalFilterFn = createFuzzySearchFn<AdminService.ListServicesItem>([
 ]);
 
 const SERVICE_TYPE_FILTER_OPTIONS = [
-  { value: 'ragflow_server', label: 'ragflow_server' },
+  { value: 'ragflow_server', label: 'Jorjin RAG' },
   { value: 'meta_data', label: 'meta_data' },
   { value: 'file_store', label: 'file_store' },
   { value: 'retrieval', label: 'retrieval' },
@@ -115,9 +115,12 @@ function AdminServiceStatus() {
       }),
       columnHelper.accessor('name', {
         header: t('admin.name'),
+        cell: ({ getValue }) => getValue().replace(/ragflow/gi, 'Jorjin RAG'),
       }),
       columnHelper.accessor('service_type', {
         header: t('admin.serviceType'),
+        cell: ({ getValue }) =>
+          getValue() === 'ragflow_server' ? 'Jorjin RAG' : getValue(),
         filterFn: createColumnFilterFn(
           (row, id, filterValue) => row.getValue(id) === filterValue,
           {

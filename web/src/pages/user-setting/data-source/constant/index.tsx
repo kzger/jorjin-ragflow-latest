@@ -931,7 +931,7 @@ const generateDataSourceFormFields = (t: TFunction) => ({
       name: 'config.query',
       type: FormFieldType.Text,
       required: true,
-      placeholder: 'ragflow lang:en',
+      placeholder: 'Jorjin RAG lang:en',
       tooltip: t('setting.xquikQueryTip'),
     },
     {

@@ -1,3 +1,4 @@
+import { supportedLanguages } from '@/locales/config';
 /*
  *  Copyright 2026 The InfiniFlow Authors. All Rights Reserved.
  *
@@ -35,11 +36,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SharedFrom } from '@/constants/chat';
-import {
-  LanguageAbbreviation,
-  LanguageAbbreviationMap,
-  ThemeEnum,
-} from '@/constants/common';
+import { ThemeEnum } from '@/constants/common';
 import { IModalProps } from '@/interfaces/common';
 import { Routes } from '@/routes';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -160,9 +157,9 @@ function EmbedDialog({
   const values = useWatch({ control: form.control });
 
   const languageOptions = useMemo(() => {
-    return Object.values(LanguageAbbreviation).map((x) => ({
-      label: LanguageAbbreviationMap[x],
-      value: x,
+    return supportedLanguages.map(({ code, displayName }) => ({
+      label: displayName,
+      value: code,
     }));
   }, []);
 
@@ -460,13 +457,13 @@ window.addEventListener('message',e=>{
                       name="widgetFooterText"
                       label="Footer text"
                     >
-                      <Input placeholder="Powered by RAGFlow"></Input>
+                      <Input placeholder="Powered by Jorjin RAG"></Input>
                     </RAGFlowFormItem>
                     <RAGFlowFormItem
                       name="widgetFooterLink"
                       label="Footer redirect link"
                     >
-                      <Input placeholder="https://ragflow.io"></Input>
+                      <Input placeholder="https://jorjin.com/"></Input>
                     </RAGFlowFormItem>
                     <FormField
                       control={form.control}
@@ -639,15 +636,11 @@ window.addEventListener('message',e=>{
           </div>
           <a
             className="cursor-pointer text-accent-primary inline-block"
-            href={
-              isAgent
-                ? 'https://ragflow.io/docs/dev/http_api_reference#create-session-with-agent'
-                : 'https://ragflow.io/docs/dev/http_api_reference#create-session-with-chat-assistant'
-            }
+            href="https://jorjin.com/"
             target="_blank"
             rel="noreferrer"
           >
-            {t(`${isAgent ? 'flow' : 'chat'}.howUseId`)}
+            {t('brand.website')}
           </a>
         </section>
       </DialogContent>

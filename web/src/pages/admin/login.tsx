@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import Spotlight from '@/components/spotlight';
+import { AuthLayout } from '@/components/auth-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -22,7 +22,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Authorization } from '@/constants/authorization';
 
 import { useAuth } from '@/hooks/auth-hooks';
@@ -32,9 +31,6 @@ import { rsaPsw } from '@/utils';
 import authorizationUtil from '@/utils/authorization-util';
 
 import { login } from '@/services/admin-service';
-
-import ThemeSwitch from '../../components/theme-switch';
-import { BgSvg } from '../login-next/bg';
 
 import { CurrentUserInfoContext } from './layouts/root-layout';
 
@@ -114,143 +110,105 @@ function AdminLogin() {
   });
 
   return (
-    <ScrollArea className="w-screen h-screen">
-      <div className="relative h-max min-h-[100vh]">
-        <Spotlight opcity={0.4} coverage={60} color="rgb(128, 255, 248)" />
-        <Spotlight
-          opcity={0.3}
-          coverage={12}
-          X="10%"
-          Y="-10%"
-          color="rgb(128, 255, 248)"
-        />
-        <Spotlight
-          opcity={0.3}
-          coverage={12}
-          X="90%"
-          Y="-10%"
-          color="rgb(128, 255, 248)"
-        />
+    <AuthLayout>
+      <h1 className="mb-8 text-center text-xl font-semibold">
+        {t('loginTitle', { keyPrefix: 'admin' })}
+      </h1>
+      <Card className="w-full border-0 bg-bg-component shadow-none">
+        <CardContent className="p-0">
+          <Form {...form}>
+            <form
+              id={formId}
+              className="space-y-8 text-text-primary"
+              onSubmit={form.handleSubmit((data) => loginMutation.mutate(data))}
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>{t('emailLabel')}</FormLabel>
 
-        <BgSvg isPaused={true} />
+                    <FormControl>
+                      <Input
+                        className="h-10"
+                        placeholder={t('emailPlaceholder')}
+                        autoComplete="email"
+                        {...field}
+                      />
+                    </FormControl>
 
-        <div className="absolute top-3 left-0 w-full">
-          <div className="absolute mt-12 ml-12 flex items-center">
-            <img className="size-8 mr-5" src="/logo.svg" alt="logo" />
-            <span className="text-xl font-bold">RAGFlow</span>
-          </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <h1 className="mt-[6.5rem] text-4xl font-medium text-center mb-12">
-            {t('loginTitle', { keyPrefix: 'admin' })}
-          </h1>
-        </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>{t('passwordLabel')}</FormLabel>
 
-        <div className="flex items-center justify-center w-screen">
-          <div className="w-full max-w-[540px] mt-72 mb-48">
-            <Card className="w-full bg-bg-component rounded-2xl shadow-none backdrop-blur-sm">
-              <CardContent className="px-10 pt-14 pb-10">
-                <Form {...form}>
-                  <form
-                    id={formId}
-                    className="space-y-8 text-text-primary"
-                    onSubmit={form.handleSubmit((data) =>
-                      loginMutation.mutate(data),
-                    )}
-                  >
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required>{t('emailLabel')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="h-10"
+                        type="password"
+                        placeholder={t('passwordPlaceholder')}
+                        autoComplete="password"
+                      />
+                    </FormControl>
 
-                          <FormControl>
-                            <Input
-                              className="h-10"
-                              placeholder={t('emailPlaceholder')}
-                              autoComplete="email"
-                              {...field}
-                            />
-                          </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                          <FormMessage />
-                        </FormItem>
+              <FormField
+                control={form.control}
+                name="remember"
+                render={({ field }) => (
+                  <FormItem className="!mt-5">
+                    <FormLabel
+                      className={cn(
+                        'transition-colors',
+                        field.value
+                          ? 'text-text-primary'
+                          : 'text-text-secondary',
                       )}
-                    />
+                    >
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
 
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required>{t('passwordLabel')}</FormLabel>
+                      <span className="ml-2">{t('rememberMe')}</span>
+                    </FormLabel>
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+        </CardContent>
 
-                          <FormControl>
-                            <Input
-                              {...field}
-                              className="h-10"
-                              type="password"
-                              placeholder={t('passwordPlaceholder')}
-                              autoComplete="password"
-                            />
-                          </FormControl>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="remember"
-                      render={({ field }) => (
-                        <FormItem className="!mt-5">
-                          <FormLabel
-                            className={cn(
-                              'transition-colors',
-                              field.value
-                                ? 'text-text-primary'
-                                : 'text-text-secondary',
-                            )}
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-
-                            <span className="ml-2">{t('rememberMe')}</span>
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                  </form>
-                </Form>
-              </CardContent>
-
-              <CardFooter className="px-10 pt-8 pb-14">
-                <Button
-                  form={formId}
-                  variant="highlighted"
-                  size="lg"
-                  block
-                  type="submit"
-                  className="font-medium"
-                  loading={loading}
-                >
-                  {t('login')}
-                </Button>
-              </CardFooter>
-            </Card>
-
-            <div className="mt-8 flex justify-center">
-              <ThemeSwitch />
-            </div>
-          </div>
-        </div>
-      </div>
-    </ScrollArea>
+        <CardFooter className="px-0 pb-0 pt-6">
+          <Button
+            form={formId}
+            variant="accent"
+            size="lg"
+            block
+            type="submit"
+            className="font-medium"
+            loading={loading}
+          >
+            {t('login')}
+          </Button>
+        </CardFooter>
+      </Card>
+    </AuthLayout>
   );
 }
 

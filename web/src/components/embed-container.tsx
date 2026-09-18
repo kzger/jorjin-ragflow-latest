@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { useFetchAppConf } from '@/hooks/logic-hooks';
+import { BrandLogo } from './brand-logo';
 import { RefreshCcw } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 import { RAGFlowAvatar } from './ragflow-avatar';
@@ -34,8 +34,6 @@ export function EmbedContainer({
   handleReset,
   hideReset = false,
 }: EmbedContainerProps) {
-  const appConf = useFetchAppConf();
-
   return (
     <section className="h-[100vh] flex justify-center items-center">
       <div className="w-full h-full md:w-[80vw] md:h-auto border-0 md:border rounded-none md:rounded-lg">
@@ -50,10 +48,7 @@ export function EmbedContainer({
             <div className="md:text-xl text-foreground">{title}</div>
           </div>
           <div className="flex items-center gap-2 md:ml-auto md:mr-3">
-            <img src="/logo.svg" alt="" className="h-6 md:h-8" />
-            <span className="hidden md:inline-block text-lg font-bold text-foreground">
-              {appConf.appName}
-            </span>
+            <BrandLogo className="w-20 md:w-36" />
           </div>
           {hideReset || (
             <Button
